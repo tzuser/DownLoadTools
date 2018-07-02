@@ -21,7 +21,7 @@ const getPathFromSrc=({src,userID,serverPath})=>{
   //视频处理
   if(splitPathname.includes('video_file')){
     //获取文件名称
-    fileName=splitPathname.pop();
+    fileName=splitPathname[4];
     if(!fileName.includes('.mp4'))fileName+=".mp4";
 
   }else if(splitPathname.length>=3){//存在目录
