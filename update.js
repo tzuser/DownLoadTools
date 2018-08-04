@@ -1,10 +1,18 @@
+let {userModel}=require("./db.js");
 const request=require('request');
 const rp=require('request-promise');
 const path=require('path');
 const headers=require('./headers');
-const {downloadPost,options}=require('./process');
+const {downloadPost,options,ExistError}=require('./process');
 
-const main=async(userID,page)=>{
+(async ()=>{
+  const userlist=await userModel.find().exec()
+  for(let user of userlist){
+    await main(user.name,1)
+  }
+})()
+
+const main=async(userID,page,htmlErrorNumber=0)=>{
   let num=20;
   let start=(page-1)*num
   let uri=`https://${userID}.tumblr.com/api/read/json?callback=api&num=${num}&start=${start}`
@@ -21,24 +29,34 @@ const main=async(userID,page)=>{
       uri,
       json:false,
       })
+      htmlErrorNumber=0;
   }catch(err){
-    console.error(`Get Html Error ${err}`);
+    console.error(`Get Html Error`);
+    htmlErrorNumber++;
+    if(htmlErrorNumber>5){
+      console.log("页面获取错误")
+      return;
+    }
   }
   if(res){
     let data=JSON.parse(res.substring(4,res.length-2));
     totalPage=Math.ceil(data['posts-total']/num);
+    let existNumb=0;
     for(let remotePost of data.posts){
+      if(existNumb>10){
+        console.log(`${userID} 更新完成`)
+        return
+      }
       await downloadPost(remotePost).catch(err=>{
-        console.error(err);
+        if(err instanceof ExistError){
+          existNumb++;
+          console.log("文章已经存在");
+        }
       })
     }
     console.log(`total page: ${totalPage}`);
   }
   if(page<totalPage){
-    main(userID,page+1)
+    main(userID,page+1,htmlErrorNumber)
   }
 }
-//secretlsggs paintingispoetry
-main('paintingispoetry',1)
-
-
