@@ -13,7 +13,7 @@ class ExistError extends Error{
   }
 }
 //服务路径
-const serverPath='G:\\';
+const serverPath='G:\\work\\react-graphql\\files';
 var options = {
     proxy:{
       host:'127.0.0.1',
@@ -45,6 +45,26 @@ const getUserFromPost=(post)=>{
 }
 
 
+//从帖子里获取root用户
+const getRootUserFromPost=(post)=>{
+  let name=post['reblogged-root-name'];
+  if(!name)return null;
+  return{
+    name,
+    nick_name:post['reblogged-root-title'],
+    avatar:post['reblogged_root_avatar_url_512'],
+  }
+}
+//从帖子里获取from用户
+const getFromUserFromPost=(post)=>{
+  let name=post['reblogged-from-name'];
+  if(!name)return null;
+  return{
+    name,
+    nick_name:post['reblogged-from-title'],
+    avatar:post['reblogged_from_avatar_url_512'],
+  }
+}
 //下载单个图片
 const getPhotoItem=async (item,userID)=>{
   let photoPath=await download({src:item['photo-url-1280'],userID,serverPath}).catch(err=>{
@@ -81,8 +101,17 @@ const cleckUserToDB=async (user)=>{
 const formatPathToSrc=(path)=>{
   return path.replace(/files[\\|/]+/,'/')
 }
-
-
+//添加
+const addUser=async (user)=>{
+  let avatarPath=await download({src:user.avatar,userID:user.name,serverPath}).catch(err=>{
+    throw `avatar download error ${err}`
+  })
+  //下载用户头像
+  user.avatar=formatPathToSrc(avatarPath);
+  //添加用户到数据库
+  user=await cleckUserToDB(user);
+  return user
+}
 //下载帖子
 const downloadPost=async (remotePost)=>{
   //查询文章是否存在
@@ -91,16 +120,19 @@ const downloadPost=async (remotePost)=>{
     throw new ExistError({msg:`文章已存在`,id:remotePost.id});
   }
   let user=getUserFromPost(remotePost);
-  let avatarPath=await download({src:user.avatar,userID:user.name,serverPath}).catch(err=>{
-    throw `avatar download error ${err}`
-  })
-  //下载用户头像
-  user.avatar=formatPathToSrc(avatarPath);
-  //添加用户到数据库
-  user=await cleckUserToDB(user);
+  user=await addUser(user);
+
+  let rootUser=getRootUserFromPost(remotePost);
+  if(rootUser){
+    rootUser=await addUser(rootUser);
+  }
+  let formUser=getFromUserFromPost(remotePost);
+  if(formUser){
+    formUser=await addUser(formUser);
+  }
   //本地的帖子
   let localPost={
-    user,
+    user:user,
     content:remotePost.slug,
     creationDate:new Date(remotePost.date),
     updateDate:new Date(),
@@ -111,6 +143,8 @@ const downloadPost=async (remotePost)=>{
     sourceId:remotePost.id,
     type:remotePost.type,
     tags:remotePost.tags,
+    rootUser:rootUser,
+    fromUser:formUser,
   };
   if(remotePost.type=="photo"){
     let thumbnailPath=await download({src:remotePost['photo-url-1280'],userID:user.name,serverPath}).catch(err=>{

@@ -6,8 +6,8 @@ const headers=require('./headers');
 const {downloadPost,options,ExistError}=require('./process');
 
 (async ()=>{
-  const userlist=await userModel.find({roles:"tumblr"}).exec()
-  for(let user of userlist){
+  const postlist=await post.find().exec()
+  for(let user of postlist){
     await main(user.name,1)
   }
 })()
@@ -46,6 +46,10 @@ const main=async(userID,page,htmlErrorNumber=0)=>{
       if(existNumb>10){
         console.log(`${userID} 更新完成`)
         return
+      }
+      
+      if(remotePost["reblogged-root-name"]!=remotePost["reblogged-from-name"]){
+        
       }
       await downloadPost(remotePost).catch(err=>{
         if(err instanceof ExistError){
