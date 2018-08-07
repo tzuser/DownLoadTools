@@ -177,6 +177,7 @@ const downloadPost=async (remotePost)=>{
     localPost.src=formatPathToSrc(videoPath)
 
   }else{
+    throw new ExistError({msg:`未支持文章类型`,id:remotePost.id});
     console.warn(`The ${remotePost.type} is Unknown type!`);
     return;
   }
