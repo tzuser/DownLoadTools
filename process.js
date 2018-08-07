@@ -41,6 +41,7 @@ const getUserFromPost=(post)=>{
     name:name,
     nick_name:title,
     avatar:avatar_url_512,
+    roles:['tumblr']
   }
 }
 
@@ -53,6 +54,7 @@ const getRootUserFromPost=(post)=>{
     name,
     nick_name:post['reblogged-root-title'],
     avatar:post['reblogged_root_avatar_url_512'],
+    roles:['tumblr']
   }
 }
 //从帖子里获取from用户
@@ -63,6 +65,7 @@ const getFromUserFromPost=(post)=>{
     name,
     nick_name:post['reblogged-from-title'],
     avatar:post['reblogged_from_avatar_url_512'],
+    roles:['tumblr']
   }
 }
 //下载单个图片
