@@ -12,12 +12,11 @@ class ExistError extends Error{
     this.id=id;
   }
 }
-//服务路径
-const serverPath='G:\\work\\react-graphql\\files';
+const serverPath='/home/tz/works/react-graphql';
 var options = {
     proxy:{
       host:'127.0.0.1',
-      port:1080
+      port:8118
     },
     json: true
 };

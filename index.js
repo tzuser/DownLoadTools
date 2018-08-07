@@ -3,7 +3,6 @@ const rp=require('request-promise');
 const path=require('path');
 const headers=require('./headers');
 const {downloadPost,options}=require('./process');
-
 const main=async(userID,page)=>{
   let num=20;
   let start=(page-1)*num
@@ -39,6 +38,5 @@ const main=async(userID,page)=>{
   }
 }
 //secretlsggs paintingispoetry
-main('baihupark',1)
-
+main('simmeng-sto',1)
 

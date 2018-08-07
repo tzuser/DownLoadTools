@@ -62,7 +62,7 @@ const download=async ({src,userID,serverPath})=>{
     request({
     proxy:{//代理
       host:'127.0.0.1',
-      port:1080
+      port:8118
     },
     method: 'GET',
     uri:src,
