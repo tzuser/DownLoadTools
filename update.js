@@ -6,7 +6,7 @@ const headers=require('./headers');
 const {downloadPost,options,ExistError}=require('./process');
 
 (async ()=>{
-  const userlist=await userModel.find({roles:"tumblr"}).exec()
+  const userlist=await userModel.find({isUpdate:true}).exec()
   for(let user of userlist){
     await main(user.name,1)
   }
@@ -39,7 +39,13 @@ const main=async(userID,page,htmlErrorNumber=0)=>{
     }
   }
   if(res){
-    let data=JSON.parse(res.substring(4,res.length-2));
+  	let data;
+  	try{
+    	data=JSON.parse(res.substring(4,res.length-2));
+    }catch(err){
+    	console.log('json error ')
+    	return;
+    }
     totalPage=Math.ceil(data['posts-total']/num);
     let existNumb=0;
     for(let remotePost of data.posts){

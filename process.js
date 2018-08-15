@@ -12,7 +12,7 @@ class ExistError extends Error{
     this.id=id;
   }
 }
-const serverPath='/home/tz/works/react-graphql';
+const serverPath=path.join(__dirname,'../react-graphql');
 var options = {
     proxy:{
       host:'127.0.0.1',
