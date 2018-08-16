@@ -2,7 +2,9 @@ const request=require('request');
 const rp=require('request-promise');
 const path=require('path');
 const headers=require('./headers');
-const {downloadPost,options}=require('./process');
+const {downloadPost}=require('./process');
+const {options}=require('./config');
+
 const main=async(userID,page)=>{
   let num=20;
   let start=(page-1)*num
