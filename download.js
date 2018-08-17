@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const url=require('url');
 const request=require('request');
+const {proxy}=require('./config');
 
 function mkdirs(dirpath) {
   if(!fs.existsSync(dirpath)){
@@ -60,10 +61,7 @@ const download=async ({src,userID,serverPath})=>{
   //下载文件
   await new Promise((resolve,reject)=>{
     request({
-    proxy:{//代理
-      host:'127.0.0.1',
-      port:8118
-    },
+    proxy:proxy,
     method: 'GET',
     uri:src,
     }).on('end', resolve).on('error', reject).pipe(fileStream);

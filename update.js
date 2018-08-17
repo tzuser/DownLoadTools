@@ -3,7 +3,8 @@ const request=require('request');
 const rp=require('request-promise');
 const path=require('path');
 const headers=require('./headers');
-const {downloadPost,options,ExistError}=require('./process');
+const {downloadPost,ExistError}=require('./process');
+const {options}=require('./config');
 
 (async ()=>{
   const userlist=await userModel.find({isUpdate:true}).exec()
@@ -57,12 +58,14 @@ const main=async(userID,page,htmlErrorNumber=0)=>{
         if(err instanceof ExistError){
           existNumb++;
           console.log("文章已经存在");
+        }else{
+          console.log(err)
         }
       })
     }
     console.log(`total page: ${totalPage}`);
   }
   if(page<totalPage){
-   await main(userID,page+1,htmlErrorNumber)
+    await main(userID,page+1,htmlErrorNumber)
   }
 }

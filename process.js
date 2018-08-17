@@ -5,6 +5,7 @@ const download=require('./download');
 const sizeOf=require('image-size');
 const cheerio = require('cheerio')
 const {postModel,userModel}=require('./db');
+const {serverPath}=require('./config');
 class ExistError extends Error{
   constructor({msg,id}){
     super()
@@ -12,14 +13,8 @@ class ExistError extends Error{
     this.id=id;
   }
 }
-const serverPath=path.join(__dirname,'../react-graphql');
-var options = {
-    proxy:{
-      host:'127.0.0.1',
-      port:8118
-    },
-    json: true
-};
+
+
 
 
 //从路径里获取图片数据
@@ -185,8 +180,6 @@ const downloadPost=async (remotePost)=>{
 }
 module.exports={
   downloadPost,
-  serverPath,
-  options,
   formatPathToSrc,
   getUserFromPost,
   getPhotoFromPath,
