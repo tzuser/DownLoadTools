@@ -63,6 +63,6 @@ const main=async(userID,page,htmlErrorNumber=0)=>{
     console.log(`total page: ${totalPage}`);
   }
   if(page<totalPage){
-    main(userID,page+1,htmlErrorNumber)
+   await main(userID,page+1,htmlErrorNumber)
   }
 }
