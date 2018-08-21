@@ -1,7 +1,7 @@
 const request=require('request');
 const rp=require('request-promise');
 const path=require('path');
-const download=require('./download');
+const downloadFromType=require('./download');
 const sizeOf=require('image-size');
 const cheerio = require('cheerio')
 const {postModel,userModel}=require('./db');
@@ -64,7 +64,7 @@ const getFromUserFromPost=(post)=>{
 }
 //下载单个图片
 const getPhotoItem=async (item,userID)=>{
-  let photoPath=await download({src:item['photo-url-1280'],userID,serverPath}).catch(err=>{
+  let photoPath=await downloadFromType({src:item['photo-url-1280'],type:'tumblr'}).catch(err=>{
     throw `photo download error ${err}`
   })
   return {
@@ -100,7 +100,7 @@ const formatPathToSrc=(path)=>{
 }
 //添加
 const addUser=async (user)=>{
-  let avatarPath=await download({src:user.avatar,userID:user.name,serverPath}).catch(err=>{
+  let avatarPath=await downloadFromType({src:user.avatar,type:'avatar'}).catch(err=>{
     throw `avatar download error ${err}`
   })
   //下载用户头像
@@ -144,7 +144,8 @@ const downloadPost=async (remotePost)=>{
     fromUser:formUser,
   };
   if(remotePost.type=="photo"){
-    let thumbnailPath=await download({src:remotePost['photo-url-1280'],userID:user.name,serverPath}).catch(err=>{
+    let thumbnailPath=await downloadFromType({src:remotePost['photo-url-1280'],type:"tumblr"}).catch(err=>{
+      console.log(remotePost)
       throw `thumbnail download error ${err}`
     })
     //下载封面
@@ -159,13 +160,13 @@ const downloadPost=async (remotePost)=>{
     const $ = cheerio.load(videoSource);
     //封面处理
     let thumbnailSrc=$('video').eq(0).attr('poster')
-    let thumbnailPath=await download({src:thumbnailSrc,userID:user.name,serverPath}).catch(err=>{
+    let thumbnailPath=await downloadFromType({src:thumbnailSrc,type:"tumblr"}).catch(err=>{
       throw `thumbnail download error ${err}`
     })
     localPost.thumbnail=getPhotoFromPath(thumbnailPath);
 
     let videoSrc=$('video>source').eq(0).attr('src')
-    let videoPath=await download({src:videoSrc,userID:user.name,serverPath}).catch(err=>{
+    let videoPath=await downloadFromType({src:videoSrc,type:"video"}).catch(err=>{
           throw `video download error ${err}`
         })
     localPost.src=formatPathToSrc(videoPath)

@@ -1,5 +1,5 @@
 const path=require('path');
-const serverPath=path.join(__dirname,'../react-graphql');
+const serverPath=path.join(__dirname,'../react-graphql/files');
 
 const proxy={
       host:'127.0.0.1',
