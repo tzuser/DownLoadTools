@@ -10,10 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "blessed": "^0.1.81",
     "cheerio": "^1.0.0-rc.2",
     "image-size": "^0.6.3",
     "mongoose": "^5.1.6",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.4.0"
   }
 }
