@@ -15,6 +15,12 @@ class ExistError extends Error {
   }
 }
 
+const getAvatar = img => {
+  if (img.includes('avatar_')) {
+    return img.replace('.png', '.pnj');
+  }
+  return img;
+};
 //从路径里获取图片数据
 const getPhotoFromPath = imagePath => {
   try {
@@ -32,12 +38,12 @@ const getPhotoFromPath = imagePath => {
 //从帖子里获取用户
 const getUserFromPost = post => {
   let {
-    tumblelog: { name, title, avatar_url_512 },
+    tumblelog: { name, title, avatar_url_128 },
   } = post;
   return {
     name: name,
     nick_name: title,
-    avatar: avatar_url_512,
+    avatar: getAvatar(avatar_url_128),
     roles: ['tumblr'],
   };
 };
@@ -49,7 +55,7 @@ const getRootUserFromPost = post => {
   return {
     name,
     nick_name: post['reblogged-root-title'],
-    avatar: post['reblogged_root_avatar_url_512'],
+    avatar: getAvatar(post['reblogged_root_avatar_url_128']),
     roles: ['tumblr'],
   };
 };
@@ -60,7 +66,7 @@ const getFromUserFromPost = post => {
   return {
     name,
     nick_name: post['reblogged-from-title'],
-    avatar: post['reblogged_from_avatar_url_512'],
+    avatar: getAvatar(post['reblogged_from_avatar_url_128']),
     roles: ['tumblr'],
   };
 };
